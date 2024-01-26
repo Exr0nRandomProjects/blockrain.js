@@ -13,6 +13,9 @@
 ((function ( $ ) {
   "use strict";
 
+  // Math.seedrandom from https://cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js
+  !function(f,a,c){var s,l=256,p="random",d=c.pow(l,6),g=c.pow(2,52),y=2*g,h=l-1;function n(n,t,r){function e(){for(var n=u.g(6),t=d,r=0;n<g;)n=(n+r)*l,t*=l,r=u.g(1);for(;y<=n;)n/=2,t/=2,r>>>=1;return(n+r)/t}var o=[],i=j(function n(t,r){var e,o=[],i=typeof t;if(r&&"object"==i)for(e in t)try{o.push(n(t[e],r-1))}catch(n){}return o.length?o:"string"==i?t:t+"\0"}((t=1==t?{entropy:!0}:t||{}).entropy?[n,S(a)]:null==n?function(){try{var n;return s&&(n=s.randomBytes)?n=n(l):(n=new Uint8Array(l),(f.crypto||f.msCrypto).getRandomValues(n)),S(n)}catch(n){var t=f.navigator,r=t&&t.plugins;return[+new Date,f,r,f.screen,S(a)]}}():n,3),o),u=new m(o);return e.int32=function(){return 0|u.g(4)},e.quick=function(){return u.g(4)/4294967296},e.double=e,j(S(u.S),a),(t.pass||r||function(n,t,r,e){return e&&(e.S&&v(e,u),n.state=function(){return v(u,{})}),r?(c[p]=n,t):n})(e,i,"global"in t?t.global:this==c,t.state)}function m(n){var t,r=n.length,u=this,e=0,o=u.i=u.j=0,i=u.S=[];for(r||(n=[r++]);e<l;)i[e]=e++;for(e=0;e<l;e++)i[e]=i[o=h&o+n[e%r]+(t=i[e])],i[o]=t;(u.g=function(n){for(var t,r=0,e=u.i,o=u.j,i=u.S;n--;)t=i[e=h&e+1],r=r*l+i[h&(i[e]=i[o=h&o+t])+(i[o]=t)];return u.i=e,u.j=o,r})(l)}function v(n,t){return t.i=n.i,t.j=n.j,t.S=n.S.slice(),t}function j(n,t){for(var r,e=n+"",o=0;o<e.length;)t[h&o]=h&(r^=19*t[h&o])+e.charCodeAt(o++);return S(t)}function S(n){return String.fromCharCode.apply(0,n)}if(j(c.random(),a),"object"==typeof module&&module.exports){module.exports=n;try{s=require("crypto")}catch(n){}}else"function"==typeof define&&define.amd?define(function(){return n}):c["seed"+p]=n}("undefined"!=typeof self?self:this,[],Math);
+
   $.widget('aerolab.blockrain', {
 
     options: {
@@ -44,7 +47,11 @@
       // When a block is placed
       onPlaced: function(){},
       // When a line is made. Returns the number of lines, score assigned and total score
-      onLine: function(lines, scoreIncrement, score){}
+      onLine: function(lines, scoreIncrement, score){},
+
+      // other callbacks
+      onKey: function(evt) {},  // NOTE: not implemented for touch or gyro controls
+      onBlockAppear: function() {}
     },
 
 
@@ -118,36 +125,36 @@
     moveLeft : function(start) {
         if( ! start ) { this._board.holding.left = null; return; }
         if( ! this._board.holding.left ) {
-          this._board.cur.moveLeft(); 
+          this._board.cur.moveLeft();
           this._board.holding.left = Date.now();
-          this._board.holding.right = null; 
+          this._board.holding.right = null;
         }
       },
     moveRight : function(start) {
         if( ! start ) { this._board.holding.right = null; return; }
         if( ! this._board.holding.right ) {
-          this._board.cur.moveRight(); 
-          this._board.holding.right = Date.now(); 
-          this._board.holding.left = null; 
+          this._board.cur.moveRight();
+          this._board.holding.right = Date.now();
+          this._board.holding.left = null;
         }
       },
     drop : function(start) {
         if( ! start ) { this._board.holding.drop = null; return; }
         if( ! this._board.holding.drop ) {
-          this._board.cur.drop(); 
+          this._board.cur.drop();
           this._board.holding.drop = Date.now();
         }
       },
     instaDrop : function(){
-        this._board.cur.instaDrop(); 
+        this._board.cur.instaDrop();
     },
 
     // Rotations can't be held
     rotateLeft : function() {
-        this._board.cur.rotate('left'); 
+        this._board.cur.rotate('left');
       },
     rotateRight : function() {
-        this._board.cur.rotate('right'); 
+        this._board.cur.rotate('right');
       },
 
 
@@ -161,6 +168,8 @@
         if( ! game._board.cur ) { return true; }
         var caught,caught0,caught1,
         caught=caught0=caught1=false;
+
+        game.options.onKey(evt);
 
         if (game.options.asdwKeys) {
           switch(evt.keyCode) {
@@ -196,6 +205,8 @@
         var caught,caught0,caught1,
         caught=caught0=caught1=false;
 
+        game.options.onKey(evt);
+
         if (game.options.asdwKeys) {
           switch(evt.keyCode) {
             case 65: /*a*/    game.moveLeft(false); break;
@@ -204,7 +215,7 @@
             default: caught0 = true;
           }
         }
-        if (game.options.arrowKeys) { 
+        if (game.options.arrowKeys) {
           switch(evt.keyCode) {
             case 37: /*left*/   game.moveLeft(false); break;
             case 39: /*right*/  game.moveRight(false); break;
@@ -299,7 +310,8 @@
                 game._board.cur.moveRight();
             }
         };
-     },
+      }
+    },
 
     score: function(newScore) {
       if( typeof newScore !== 'undefined' && parseInt(newScore) >= 0 ) {
@@ -488,8 +500,8 @@
       //       var cx = x * this._block_size;
       //       var cy = y * this._block_size;
 
-      //       this._ctx.drawImage(  this._theme.backgroundGrid, 
-      //                             0, 0, this._theme.backgroundGrid.width, this._theme.backgroundGrid.height, 
+      //       this._ctx.drawImage(  this._theme.backgroundGrid,
+      //                             0, 0, this._theme.backgroundGrid.width, this._theme.backgroundGrid.height,
       //                             cx, cy, this._block_size, this._block_size);
       //     }
       //   }
@@ -530,12 +542,12 @@
        * Keep in mind that the blocks should keep in the same relative position when rotating,
        * to allow for custom per-block themes.
        */
-      /*            
-       *   X      
-       *   O  XOXX
-       *   X      
+      /*
        *   X
-       *   .   .      
+       *   O  XOXX
+       *   X
+       *   X
+       *   .   .
        */
       line: [
           [ 0, -1,   0, -2,   0, -3,   0, -4],
@@ -565,9 +577,9 @@
         [1, -2,   1, -1,   1,  0,   2, -1]
       ],
       /*
-       *    X    X XX 
-       *    O  XOX  O XOX 
-       *   .XX .   .X X   
+       *    X    X XX
+       *    O  XOX  O XOX
+       *   .XX .   .X X
        */
       rightHook: [
         [2,  0,   1,  0,   1, -1,   1, -2],
@@ -576,9 +588,9 @@
         [0,  0,   0, -1,   1, -1,   2, -1]
       ],
       /*
-       *    X      XX X  
+       *    X      XX X
        *    O XOX  O  XOX
-       *   XX . X .X  .  
+       *   XX . X .X  .
        */
       leftHook: [
         [0,  0,   1,  0,   1, -1,   1, -2],
@@ -587,9 +599,9 @@
         [0, -2,   0, -1,   1, -1,   2, -1]
       ],
       /*
-       *    X  XX 
+       *    X  XX
        *   XO   OX
-       *   X   .  
+       *   X   .
        */
       leftZag: [
         [0,  0,   0, -1,   1, -1,   1, -2],
@@ -598,9 +610,9 @@
         [0, -2,   1, -2,   1, -1,   2, -1]
       ],
       /*
-       *   X    
+       *   X
        *   XO   OX
-       *   .X  XX   
+       *   .X  XX
        */
       rightZag: [
         [1,  0,   1, -1,   0, -1,   0, -2],
@@ -754,6 +766,8 @@
           }
         });
 
+        game.options.onBlockAppear(this);
+
         return this.init();
       };
 
@@ -797,9 +811,9 @@
         add: function(x, y, blockType, blockVariation, blockIndex, blockOrientation) {
           if (x >= 0 && x < game._BLOCK_WIDTH && y >= 0 && y < game._BLOCK_HEIGHT) {
             this.data[this.asIndex(x, y)] = {
-              blockType: blockType, 
-              blockVariation: blockVariation, 
-              blockIndex: blockIndex, 
+              blockType: blockType,
+              blockVariation: blockVariation,
+              blockIndex: blockIndex,
               blockOrientation: blockOrientation
             };
           }
@@ -936,12 +950,12 @@
 
         init: function() {
           game._setSeed(game.options.seed)
-          
+
           var gameShapes=[]
           $.each(game._shapeFactory, function(k,v) { gameShapes.push(v); });
           game.gameShapes=gameShapes
           gameShapes=null
-          
+
 
           this.cur = this.nextShape();
 
@@ -1016,7 +1030,6 @@
         },
 
         animate: function() {
-          console.log('eee')
           var drop = false,
               moved = false,
               gameOver = false,
@@ -1029,10 +1042,10 @@
           if( !this.paused && !this.gameover ) {
 
             this.dropCount++;
-            
+
             // Drop by delay or holding
-            if( (this.dropCount >= this.dropDelay) || 
-                (game.options.autoplay) || 
+            if( (this.dropCount >= this.dropDelay) ||
+                (game.options.autoplay) ||
                 (this.holding.drop && (now - this.holding.drop) >= this.holdingThreshold) ) {
               drop = true;
             moved = true;
@@ -1177,7 +1190,7 @@
 
         /**
          * Draws one block (Each piece is made of 4 blocks)
-         * The blockType is used to draw any block. 
+         * The blockType is used to draw any block.
          * The falling attribute is needed to apply different styles for falling and placed blocks.
          */
         drawBlock: function(x, y, blockType, blockVariation, blockIndex, blockRotation, falling) {
@@ -1221,7 +1234,7 @@
                 var maxY = Math.max(positions[1], positions[3], positions[5], positions[7]);
                 var rangeX = maxX - minX + 1;
                 var rangeY = maxY - minY + 1;
-                
+
                 // X and Y sizes should match. Should.
                 var tileSizeX = image.width / rangeX;
                 var tileSizeY = image.height / rangeY;
@@ -1241,9 +1254,9 @@
               game._ctx.translate(x, y);
               game._ctx.translate(game._block_size/2, game._block_size/2);
               game._ctx.rotate(-Math.PI/2 * blockRotation);
-              game._ctx.drawImage(color,  coords.x, coords.y, coords.w, coords.h, 
+              game._ctx.drawImage(color,  coords.x, coords.y, coords.w, coords.h,
                                           -game._block_size/2, -game._block_size/2, game._block_size, game._block_size);
-              
+
               game._ctx.restore();
 
             } else {
@@ -1310,7 +1323,7 @@
             if( $.isArray(blockTheme) ) {
               if( blockVariation !== null && typeof blockTheme[blockVariation] !== 'undefined' ) {
                 return blockTheme[blockVariation];
-              } 
+              }
               else if(blockTheme.length > 0) {
                 return blockTheme[0];
               } else {
@@ -1688,7 +1701,7 @@
 
 });
 
-})(jQuery);
+})(jQuery));
 /**
  * Themes. You can add more custom themes to this object.
  */
