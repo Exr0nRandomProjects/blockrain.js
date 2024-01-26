@@ -1041,9 +1041,7 @@
           //game.updateSizes();
 
           if( !this.paused && !this.gameover ) {
-
             game.options.onTick();
-            console.log("ticked!")
 
             this.dropCount++;
 
