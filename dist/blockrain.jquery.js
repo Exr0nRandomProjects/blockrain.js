@@ -51,7 +51,8 @@
 
       // other callbacks
       onKey: function(evt) {},  // NOTE: not implemented for touch or gyro controls
-      onBlockAppear: function() {}
+      onBlockAppear: function() {},
+      onTick: function() {}
     },
 
 
@@ -766,7 +767,7 @@
           }
         });
 
-        game.options.onBlockAppear(this);
+        if (! game.gameOver && ! game.paused) game.options.onBlockAppear(this);
 
         return this.init();
       };
@@ -1040,6 +1041,9 @@
           //game.updateSizes();
 
           if( !this.paused && !this.gameover ) {
+
+            game.options.onTick();
+            console.log("ticked!")
 
             this.dropCount++;
 

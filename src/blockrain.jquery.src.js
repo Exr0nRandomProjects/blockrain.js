@@ -755,7 +755,7 @@
           }
         });
 
-        game.options.onBlockAppear(this);
+        if (! game.gameOver && ! game.paused) game.options.onBlockAppear(this);
 
         return this.init();
       };
