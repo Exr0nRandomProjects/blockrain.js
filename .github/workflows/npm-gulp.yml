@@ -12,7 +12,6 @@ jobs:
 
     strategy:
       fail-fast: false
-      continue-on-error: true
       matrix:
         node-version: [0.12.18, 7.10.x, 9.11.x, 11.15.x]
 
