@@ -1,5 +1,5 @@
 /*!
- * BlockRain.js 0.2.0
+ * BlockRain.js 0.2.1
  * jQuery plugin that lets you put a playable (and configurable) game of Tetris in your site or just leave it in auto in the background.
  * http://aerolab.github.io/blockrain.js/
  *
@@ -11,7 +11,6 @@
  // jQuery Widget
 (function(e){"function"==typeof define&&define.amd?define(["jquery"],e):e(jQuery)})(function(e){var t=0,i=Array.prototype.slice;e.cleanData=function(t){return function(i){var s,n,a;for(a=0;null!=(n=i[a]);a++)try{s=e._data(n,"events"),s&&s.remove&&e(n).triggerHandler("remove")}catch(o){}t(i)}}(e.cleanData),e.widget=function(t,i,s){var n,a,o,r,h={},l=t.split(".")[0];return t=t.split(".")[1],n=l+"-"+t,s||(s=i,i=e.Widget),e.expr[":"][n.toLowerCase()]=function(t){return!!e.data(t,n)},e[l]=e[l]||{},a=e[l][t],o=e[l][t]=function(e,t){return this._createWidget?(arguments.length&&this._createWidget(e,t),void 0):new o(e,t)},e.extend(o,a,{version:s.version,_proto:e.extend({},s),_childConstructors:[]}),r=new i,r.options=e.widget.extend({},r.options),e.each(s,function(t,s){return e.isFunction(s)?(h[t]=function(){var e=function(){return i.prototype[t].apply(this,arguments)},n=function(e){return i.prototype[t].apply(this,e)};return function(){var t,i=this._super,a=this._superApply;return this._super=e,this._superApply=n,t=s.apply(this,arguments),this._super=i,this._superApply=a,t}}(),void 0):(h[t]=s,void 0)}),o.prototype=e.widget.extend(r,{widgetEventPrefix:a?r.widgetEventPrefix||t:t},h,{constructor:o,namespace:l,widgetName:t,widgetFullName:n}),a?(e.each(a._childConstructors,function(t,i){var s=i.prototype;e.widget(s.namespace+"."+s.widgetName,o,i._proto)}),delete a._childConstructors):i._childConstructors.push(o),e.widget.bridge(t,o),o},e.widget.extend=function(t){for(var s,n,a=i.call(arguments,1),o=0,r=a.length;r>o;o++)for(s in a[o])n=a[o][s],a[o].hasOwnProperty(s)&&void 0!==n&&(t[s]=e.isPlainObject(n)?e.isPlainObject(t[s])?e.widget.extend({},t[s],n):e.widget.extend({},n):n);return t},e.widget.bridge=function(t,s){var n=s.prototype.widgetFullName||t;e.fn[t]=function(a){var o="string"==typeof a,r=i.call(arguments,1),h=this;return a=!o&&r.length?e.widget.extend.apply(null,[a].concat(r)):a,o?this.each(function(){var i,s=e.data(this,n);return"instance"===a?(h=s,!1):s?e.isFunction(s[a])&&"_"!==a.charAt(0)?(i=s[a].apply(s,r),i!==s&&void 0!==i?(h=i&&i.jquery?h.pushStack(i.get()):i,!1):void 0):e.error("no such method '"+a+"' for "+t+" widget instance"):e.error("cannot call methods on "+t+" prior to initialization; "+"attempted to call method '"+a+"'")}):this.each(function(){var t=e.data(this,n);t?(t.option(a||{}),t._init&&t._init()):e.data(this,n,new s(a,this))}),h}},e.Widget=function(){},e.Widget._childConstructors=[],e.Widget.prototype={widgetName:"widget",widgetEventPrefix:"",defaultElement:"<div>",options:{disabled:!1,create:null},_createWidget:function(i,s){s=e(s||this.defaultElement||this)[0],this.element=e(s),this.uuid=t++,this.eventNamespace="."+this.widgetName+this.uuid,this.bindings=e(),this.hoverable=e(),this.focusable=e(),s!==this&&(e.data(s,this.widgetFullName,this),this._on(!0,this.element,{remove:function(e){e.target===s&&this.destroy()}}),this.document=e(s.style?s.ownerDocument:s.document||s),this.window=e(this.document[0].defaultView||this.document[0].parentWindow)),this.options=e.widget.extend({},this.options,this._getCreateOptions(),i),this._create(),this._trigger("create",null,this._getCreateEventData()),this._init()},_getCreateOptions:e.noop,_getCreateEventData:e.noop,_create:e.noop,_init:e.noop,destroy:function(){this._destroy(),this.element.unbind(this.eventNamespace).removeData(this.widgetFullName).removeData(e.camelCase(this.widgetFullName)),this.widget().unbind(this.eventNamespace).removeAttr("aria-disabled").removeClass(this.widgetFullName+"-disabled "+"ui-state-disabled"),this.bindings.unbind(this.eventNamespace),this.hoverable.removeClass("ui-state-hover"),this.focusable.removeClass("ui-state-focus")},_destroy:e.noop,widget:function(){return this.element},option:function(t,i){var s,n,a,o=t;if(0===arguments.length)return e.widget.extend({},this.options);if("string"==typeof t)if(o={},s=t.split("."),t=s.shift(),s.length){for(n=o[t]=e.widget.extend({},this.options[t]),a=0;s.length-1>a;a++)n[s[a]]=n[s[a]]||{},n=n[s[a]];if(t=s.pop(),1===arguments.length)return void 0===n[t]?null:n[t];n[t]=i}else{if(1===arguments.length)return void 0===this.options[t]?null:this.options[t];o[t]=i}return this._setOptions(o),this},_setOptions:function(e){var t;for(t in e)this._setOption(t,e[t]);return this},_setOption:function(e,t){return this.options[e]=t,"disabled"===e&&(this.widget().toggleClass(this.widgetFullName+"-disabled",!!t),t&&(this.hoverable.removeClass("ui-state-hover"),this.focusable.removeClass("ui-state-focus"))),this},enable:function(){return this._setOptions({disabled:!1})},disable:function(){return this._setOptions({disabled:!0})},_on:function(t,i,s){var n,a=this;"boolean"!=typeof t&&(s=i,i=t,t=!1),s?(i=n=e(i),this.bindings=this.bindings.add(i)):(s=i,i=this.element,n=this.widget()),e.each(s,function(s,o){function r(){return t||a.options.disabled!==!0&&!e(this).hasClass("ui-state-disabled")?("string"==typeof o?a[o]:o).apply(a,arguments):void 0}"string"!=typeof o&&(r.guid=o.guid=o.guid||r.guid||e.guid++);var h=s.match(/^([\w:-]*)\s*(.*)$/),l=h[1]+a.eventNamespace,u=h[2];u?n.delegate(u,l,r):i.bind(l,r)})},_off:function(t,i){i=(i||"").split(" ").join(this.eventNamespace+" ")+this.eventNamespace,t.unbind(i).undelegate(i),this.bindings=e(this.bindings.not(t).get()),this.focusable=e(this.focusable.not(t).get()),this.hoverable=e(this.hoverable.not(t).get())},_delay:function(e,t){function i(){return("string"==typeof e?s[e]:e).apply(s,arguments)}var s=this;return setTimeout(i,t||0)},_hoverable:function(t){this.hoverable=this.hoverable.add(t),this._on(t,{mouseenter:function(t){e(t.currentTarget).addClass("ui-state-hover")},mouseleave:function(t){e(t.currentTarget).removeClass("ui-state-hover")}})},_focusable:function(t){this.focusable=this.focusable.add(t),this._on(t,{focusin:function(t){e(t.currentTarget).addClass("ui-state-focus")},focusout:function(t){e(t.currentTarget).removeClass("ui-state-focus")}})},_trigger:function(t,i,s){var n,a,o=this.options[t];if(s=s||{},i=e.Event(i),i.type=(t===this.widgetEventPrefix?t:this.widgetEventPrefix+t).toLowerCase(),i.target=this.element[0],a=i.originalEvent)for(n in a)n in i||(i[n]=a[n]);return this.element.trigger(i,s),!(e.isFunction(o)&&o.apply(this.element[0],[i].concat(s))===!1||i.isDefaultPrevented())}},e.each({show:"fadeIn",hide:"fadeOut"},function(t,i){e.Widget.prototype["_"+t]=function(s,n,a){"string"==typeof n&&(n={effect:n});var o,r=n?n===!0||"number"==typeof n?i:n.effect||i:t;n=n||{},"number"==typeof n&&(n={duration:n}),o=!e.isEmptyObject(n),n.complete=a,n.delay&&s.delay(n.delay),o&&e.effects&&e.effects.effect[r]?s[t](n):r!==t&&s[r]?s[r](n.duration,n.easing,a):s.queue(function(i){e(this)[t](),a&&a.call(s[0]),i()})}}),e.widget});
 ((function ( $ ) {
-
   "use strict";
 
   $.widget('aerolab.blockrain', {
@@ -27,9 +26,11 @@
       difficulty: 'normal', // Difficulty (normal|nice|evil).
       speed: 20, // The speed of the game. The higher, the faster the pieces go.
       asdwKeys: true, // Enable ASDW keys
+      arrowKeys:true,
+      seed:null,
 
       // Copy
-      playText: 'Let\'s play some Tetris',
+      playText: 'Let\'s play',
       playButtonText: 'Play',
       gameOverText: 'Game Over',
       restartButtonText: 'Play Again',
@@ -56,6 +57,7 @@
     },
 
     restart: function() {
+      this._setSeed()
       this._doStart();
       this.options.onRestart.call(this.element);
     },
@@ -81,6 +83,16 @@
       this._$score.fadeIn(150);
     },
 
+    startButton:function(){
+      if(!this._board.started){
+         this.start();
+         return
+      }else if(this._board.gameover){
+         this.restart();
+         return
+      }
+      this._board.paused=!this._board.paused
+    },
 
     pause: function() {
       this._board.paused = true;
@@ -98,19 +110,196 @@
       if( enable && ! this._board.started ) {
         this._doStart();
       }
-      this._setupControls( ! enable );
-      this._setupTouchControls( ! enable );
+      this.controls( ! enable );
+      this._touchControls( ! enable );
     },
+
+    // Movements can be held for faster movement
+    moveLeft : function(start) {
+        if( ! start ) { this._board.holding.left = null; return; }
+        if( ! this._board.holding.left ) {
+          this._board.cur.moveLeft(); 
+          this._board.holding.left = Date.now();
+          this._board.holding.right = null; 
+        }
+      },
+    moveRight : function(start) {
+        if( ! start ) { this._board.holding.right = null; return; }
+        if( ! this._board.holding.right ) {
+          this._board.cur.moveRight(); 
+          this._board.holding.right = Date.now(); 
+          this._board.holding.left = null; 
+        }
+      },
+    drop : function(start) {
+        if( ! start ) { this._board.holding.drop = null; return; }
+        if( ! this._board.holding.drop ) {
+          this._board.cur.drop(); 
+          this._board.holding.drop = Date.now();
+        }
+      },
+    instaDrop : function(){
+        this._board.cur.instaDrop(); 
+    },
+
+    // Rotations can't be held
+    rotateLeft : function() {
+        this._board.cur.rotate('left'); 
+      },
+    rotateRight : function() {
+        this._board.cur.rotate('right'); 
+      },
+
 
     controls: function(enable) {
       if( typeof enable !== 'boolean' ){ enable = true; }
-      this._setupControls(enable);
+      var game = this;
+
+
+      // Handlers: These are used to be able to bind/unbind controls
+      var handleKeyDown = function(evt) {
+        if( ! game._board.cur ) { return true; }
+        var caught,caught0,caught1,
+        caught=caught0=caught1=false;
+
+        if (game.options.asdwKeys) {
+          switch(evt.keyCode) {
+            case 65: /*a*/    game.moveLeft(true); break;
+            case 68: /*d*/    game.moveRight(true); break;
+            case 83: /*s*/    game.drop(true); break;
+            case 87: /*w*/    game.rotateRight(); break;
+            default: caught0 = true;
+          }
+        }
+        if (game.options.arrowKeys) {
+          //alert(evt.keyCode)
+          switch(evt.keyCode) {
+            case 37: /*left*/   game.moveLeft(true); break;
+            case 39: /*right*/  game.moveRight(true); break;
+            case 40: /*down*/   game.drop(true); break;
+            case 38: /*up*/     game.rotateRight(); break;
+            case 88: /*x*/      game.rotateRight(); break;
+            case 90: /*z*/      game.rotateLeft(); break;
+            case 190: /*.*/     game.startButton();break;
+            case 191: /*/*/     game.instaDrop(); break;
+            default: caught1=true;
+          }
+        }
+        caught=caught0||caught1;
+        if (!caught) evt.preventDefault();
+        return caught;
+      };
+
+
+      var handleKeyUp = function(evt) {
+        if( ! game._board.cur ) { return true; }
+        var caught,caught0,caught1,
+        caught=caught0=caught1=false;
+
+        if (game.options.asdwKeys) {
+          switch(evt.keyCode) {
+            case 65: /*a*/    game.moveLeft(false); break;
+            case 68: /*d*/    game.moveRight(false); break;
+            case 83: /*s*/    game.drop(false); break;
+            default: caught0 = true;
+          }
+        }
+        if (game.options.arrowKeys) { 
+          switch(evt.keyCode) {
+            case 37: /*left*/   game.moveLeft(false); break;
+            case 39: /*right*/  game.moveRight(false); break;
+            case 40: /*down*/   game.drop(false); break;
+            case 47: /*/*/      game.instaDrop(false); break;
+            default: caught1 = true;
+          }
+        }
+        caught=caught0||caught1;
+        if (!caught) evt.preventDefault();
+        return caught;
+      };
+
+      function isStopKey(evt) {
+        var cfg = {
+          stopKeys: {37:1, 38:1, 39:1, 40:1}
+        };
+
+        var isStop = (cfg.stopKeys[evt.keyCode] || (cfg.moreStopKeys && cfg.moreStopKeys[evt.keyCode]));
+        if (isStop) evt.preventDefault();
+        return isStop;
+      }
+
+      function getKey(evt) { return 'safekeypress.' + evt.keyCode; }
+
+      function keydown(evt) {
+        var key = getKey(evt);
+        $.data(this, key, ($.data(this, key) || 0) - 1);
+        return handleKeyDown.call(this, evt);
+      }
+
+      function keyup(evt) {
+        $.data(this, getKey(evt), 0);
+        handleKeyUp.call(this, evt);
+        return isStopKey(evt);
+      }
+
+      // Unbind everything by default
+      // Use event namespacing so we don't ruin other keypress events
+      // $(document) .unbind('keydown.blockrain')
+      //             .unbind('keyup.blockrain');
+
+      if( ! game.options.autoplay ) {
+        if( enable ) {
+          $(document) .bind('keydown.blockrain', keydown)
+                      .bind('keyup.blockrain', keyup);
+        }
+      }
     },
 
     touchControls: function(enable) {
       if( typeof enable !== 'boolean' ){ enable = true; }
-      this._setupTouchControls(enable);
+      var game = this;
+
+      // Unbind everything by default
+      game._$touchLeft.unbind('touchstart touchend click');
+      game._$touchRight.unbind('touchstart touchend click');
+      game._$touchRotateLeft.unbind('touchstart touchend click');
+      game._$touchRotateRight.unbind('touchstart touchend click');
+      game._$touchDrop.unbind('touchstart touchend click');
+
+      if( ! game.options.autoplay && enable ) {
+        game._$touchLeft.show().bind('touchstart click', function(e){e.preventDefault();game.moveLeft(true);game._board.holding.drop = null;})
+          .bind('touchend', function(e){e.preventDefault();game.moveLeft(false)});
+        game._$touchRight.show().bind('touchstart click', function(e){e.preventDefault();game.moveRight(true);game._board.holding.drop = null;})
+          .bind('touchend', function(e){e.preventDefault();game.moveRight(false)});
+        game._$touchDrop.show().bind('touchstart click', function(e){e.preventDefault();game.drop(true)})
+          .bind('touchend', function(e){e.preventDefault();game.drop(false)});
+        game._$touchRotateLeft.show().bind('touchstart click', function(e){e.preventDefault();game.rotateLeft()});
+        game._$touchRotateRight.show().bind('touchstart click', function(e){e.preventDefault();game.rotateRight()});
+      } else {
+        game._$touchLeft.hide();
+        game._$touchRight.hide();
+        game._$touchRotateLeft.hide();
+        game._$touchRotateRight.hide();
+        game._$touchDrop.hide();
+      }
     },
+
+    gyroControls:function(){
+      if (window.DeviceMotionEvent !== undefined) {
+        window.ondevicemotion = function(event) {
+            var accX = Math.round(event.accelerationIncludingGravity.x * 10) / 10;
+            var accZ = Math.round(event.accelerationIncludingGravity.z * 10) / 10;
+            if (Math.round(accZ) > 4) {
+                game._board.cur.drop();
+            }
+            if (Math.round(accX) > 1) {
+                game._board.cur.moveLeft();
+            }
+            if (Math.round(accX) < -1) {
+                game._board.cur.moveRight();
+            }
+        };
+     },
 
     score: function(newScore) {
       if( typeof newScore !== 'undefined' && parseInt(newScore) >= 0 ) {
@@ -152,6 +341,7 @@
 
       this._$canvas .attr('width', this._PIXEL_WIDTH)
                     .attr('height', this._PIXEL_HEIGHT);
+      this._$canvas.css('background-size',this._block_size+'px '+this._block_size+'px');
     },
 
 
@@ -218,9 +408,9 @@
 
       var game = this;
 
+      this._createHolder();
       this.theme(this.options.theme);
 
-      this._createHolder();
       this._createUI();
 
       this._refreshBlockSizes();
@@ -247,10 +437,10 @@
 
       if( this.options.autoplay ) {
         this.autoplay(true);
-        this._setupTouchControls(false);
+        this.touchControls(false);
       } else {
-        this._setupControls(true);
-        this._setupTouchControls(false);
+        this.controls(true);
+        this.touchControls(false);
       }
 
     },
@@ -282,50 +472,50 @@
      */
     _drawBackground: function() {
 
-      if( typeof this._theme.background !== 'string' ) {
-        return;
-      }
+      //if( typeof this._theme.background !== 'string' ) {
+      //  return;
+      //}
 
-      if( this._theme.backgroundGrid instanceof Image ) {
+      // if( this._theme.backgroundGrid instanceof Image ) {
 
-        // Not loaded
-        if( this._theme.backgroundGrid.width === 0 || this._theme.backgroundGrid.height === 0 ){ return; }
+      //   // Not loaded
+      //   if( this._theme.backgroundGrid.width === 0 || this._theme.backgroundGrid.height === 0 ){ return; }
 
-        this._ctx.globalAlpha = 1.0;
+      //   this._ctx.globalAlpha = 1.0;
 
-        for( var x=0; x<this._BLOCK_WIDTH; x++ ) {
-          for( var y=0; y<this._BLOCK_HEIGHT; y++ ) {
-            var cx = x * this._block_size;
-            var cy = y * this._block_size;
+      //   for( var x=0; x<this._BLOCK_WIDTH; x++ ) {
+      //     for( var y=0; y<this._BLOCK_HEIGHT; y++ ) {
+      //       var cx = x * this._block_size;
+      //       var cy = y * this._block_size;
 
-            this._ctx.drawImage(  this._theme.backgroundGrid, 
-                                  0, 0, this._theme.backgroundGrid.width, this._theme.backgroundGrid.height, 
-                                  cx, cy, this._block_size, this._block_size);
-          }
-        }
+      //       this._ctx.drawImage(  this._theme.backgroundGrid, 
+      //                             0, 0, this._theme.backgroundGrid.width, this._theme.backgroundGrid.height, 
+      //                             cx, cy, this._block_size, this._block_size);
+      //     }
+      //   }
 
-      }
-      else if( typeof this._theme.backgroundGrid === 'string' ) {
+      // }
+      // else if( typeof this._theme.backgroundGrid === 'string' ) {
 
-        var borderWidth = this._theme.strokeWidth;
-        var borderDistance = Math.round(this._block_size*0.23);
-        var squareDistance = Math.round(this._block_size*0.30);
+      //   var borderWidth = this._theme.strokeWidth;
+      //   var borderDistance = Math.round(this._block_size*0.23);
+      //   var squareDistance = Math.round(this._block_size*0.30);
 
-        this._ctx.globalAlpha = 1.0;
-        this._ctx.fillStyle = this._theme.backgroundGrid;
+      //   this._ctx.globalAlpha = 1.0;
+      //   this._ctx.fillStyle = this._theme.backgroundGrid;
 
-        for( var x=0; x<this._BLOCK_WIDTH; x++ ) {
-          for( var y=0; y<this._BLOCK_HEIGHT; y++ ) {
-            var cx = x * this._block_size;
-            var cy = y * this._block_size;
+      //   for( var x=0; x<this._BLOCK_WIDTH; x++ ) {
+      //     for( var y=0; y<this._BLOCK_HEIGHT; y++ ) {
+      //       var cx = x * this._block_size;
+      //       var cy = y * this._block_size;
 
-            this._ctx.fillRect(cx+borderWidth, cy+borderWidth, this._block_size-borderWidth*2, this._block_size-borderWidth*2);
-          }
-        }
+      //       this._ctx.fillRect(cx+borderWidth, cy+borderWidth, this._block_size-borderWidth*2, this._block_size-borderWidth*2);
+      //     }
+      //   }
 
-      }
+      // }
 
-      this._ctx.globalAlpha = 1.0;
+      //this._ctx.globalAlpha = 1.0;
     },
 
 
@@ -447,6 +637,7 @@
           orientation: 0, // 4 possible
 
           rotate: function(direction) {
+            if(game._board.paused){return};
             var orientation =
               (this.orientation + (direction === "left" ? 1 : -1) + 4) % 4;
 
@@ -497,18 +688,21 @@
           },
 
           moveRight: function() {
+            if(game._board.paused){return};
             if (!game._checkCollisions(this.x + 1, this.y, this.getBlocks())) {
               this.x++;
               game._board.renderChanged = true;
             }
           },
           moveLeft: function() {
+            if(game._board.paused){return};
             if (!game._checkCollisions(this.x - 1, this.y, this.getBlocks())) {
               this.x--;
               game._board.renderChanged = true;
             }
           },
           drop: function() {
+            if(game._board.paused){return};
             if (!game._checkCollisions(this.x, this.y + 1, this.getBlocks())) {
               this.y++;
               // Reset the drop count, as we dropped the block sooner
@@ -516,6 +710,13 @@
               game._board.animate();
               game._board.renderChanged = true;
             }
+          },
+          instaDrop: function() {
+            if(game._board.paused){return};
+            while(!game._checkCollisions(this.x, this.y + 1, this.getBlocks())) {
+              this.y++;
+            }
+            game._board.renderChanged = true;
           },
 
           getBlocks: function(orientation) { // optional param
@@ -734,10 +935,19 @@
         renderChanged: true,
 
         init: function() {
+          game._setSeed(game.options.seed)
+          
+          var gameShapes=[]
+          $.each(game._shapeFactory, function(k,v) { gameShapes.push(v); });
+          game.gameShapes=gameShapes
+          gameShapes=null
+          
+
           this.cur = this.nextShape();
 
           if( game.options.showFieldOnStart ) {
             game._drawBackground();
+
             game._board.createRandomBoard();
             game._board.render();
           }
@@ -806,6 +1016,7 @@
         },
 
         animate: function() {
+          console.log('eee')
           var drop = false,
               moved = false,
               gameOver = false,
@@ -833,6 +1044,17 @@
               moved = true;
               this.cur.moveLeft();
             }
+
+             /*if(this.holding.left){
+              if(this.holding.left===true){
+                this.holding.left=Date.now()
+                moved=true
+                this.cur.moveLeft();
+              }else if( (now - this.holding.left) >= this.holdingThreshold ) {
+                moved = true;
+                this.cur.moveLeft();
+              }
+            }*/
 
             // Move Right by holding
             if( this.holding.right && (now - this.holding.right) >= this.holdingThreshold ) {
@@ -903,6 +1125,7 @@
         },
 
         createRandomBoard: function() {
+          var savedState=game.prng.state();
 
           var start = [], blockTypes = [], i, ilen, j, jlen, blockType;
 
@@ -936,6 +1159,8 @@
           */
 
           game._board.render(true);
+          //console.log(savedState,Math.seedrandom('',{state:savedState}))
+          game.prng=new Math.seedrandom('',{state:savedState}) //ensures that prng state stays the same
 
         },
 
@@ -1121,8 +1346,29 @@
       game._niceShapes = game._getNiceShapes();
     },
 
+    _setSeed:function(seed){
+      if(seed==null){
+        seed=this.seed
+      }
+      if(seed==null){
+        seed='xxxxxxxxxxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      }
+      if(seed.indexOf('.')==-1){
+        seed+='.0'
+      }else{
+        seed=seed.split('.')
+        seed[seed.length - 1]=parseInt(seed[seed.length-1])+1
+        seed=seed.join('.')
+      }
+
+      this.seed=seed
+      this.prng=new Math.seedrandom(this.seed,{state: true})
+    },
     // Utility Functions
-    _randInt: function(a, b) { return a + Math.floor(Math.random() * (1 + b - a)); },
+    _randInt: function(a, b) { return a + Math.floor(this.prng() * (1 + b - a)); },
     _randSign: function() { return this._randInt(0, 1) * 2 - 1; },
     _randChoice: function(choices) { return choices[this._randInt(0, choices.length-1)]; },
 
@@ -1194,9 +1440,13 @@
         if( typeof this._theme.backgroundGrid === 'string' ) {
           if( ! hexColorcheck.test( this._theme.backgroundGrid ) ) {
             var src = this._theme.backgroundGrid;
-            this._theme.backgroundGrid = new Image();
-            this._theme.backgroundGrid.src = src;
-            this._theme.backgroundGrid.onload = handleAssetLoad;
+            //this._theme.backgroundGrid = new Image();
+            //this._theme.backgroundGrid.src = src;
+            //this._theme.backgroundGrid.onload = handleAssetLoad;
+            this._$canvas.css('background-image', 'url(' + this._theme.backgroundGrid + ')');
+            this._$canvas.css('background-position', 'left bottom');
+          }else{ //is a color
+            this._$canvas.css('background-color', this._theme.backgroundGrid);
           }
         }
       }
@@ -1420,214 +1670,25 @@
       return func;
     },
 
-
+    shapePool:[],
+    gameShapes:null,
     _randomShapes: function() {
-      // Todo: The shapefuncs should be cached.
-      var shapeFuncs = [];
-      $.each(this._shapeFactory, function(k,v) { shapeFuncs.push(v); });
+      //console.log(this.shapePool,this.gameShapes)
 
-      return this._randChoice(shapeFuncs);
+      if(!this.shapePool.length){
+        for(var i=0,l=4;i<l;i++){
+          this.shapePool=this.shapePool.concat(this.gameShapes)
+        }
+      }
+      var index=this._randInt(0, this.shapePool.length-1);
+      var choice=this.shapePool[index]
+      this.shapePool.splice(index, 1);
+      return choice
     },
 
+});
 
-    /**
-     * Controls
-     */
-    _setupControls: function(enable) {
-
-      var game = this;
-
-      var moveLeft = function(start) {
-        if( ! start ) { game._board.holding.left = null; return; }
-        if( ! game._board.holding.left ) {
-          game._board.cur.moveLeft(); 
-          game._board.holding.left = Date.now();
-          game._board.holding.right = null; 
-        }
-      }
-      var moveRight = function(start) {
-        if( ! start ) { game._board.holding.right = null; return; }
-        if( ! game._board.holding.right ) {
-          game._board.cur.moveRight(); 
-          game._board.holding.right = Date.now(); 
-          game._board.holding.left = null; 
-        }
-      }
-      var drop = function(start) {
-        if( ! start ) { game._board.holding.drop = null; return; }
-        if( ! game._board.holding.drop ) {
-          game._board.cur.drop(); 
-          game._board.holding.drop = Date.now();
-        }
-      }
-      var rotateLeft = function() {
-        game._board.cur.rotate('left'); 
-      }
-      var rotateRight = function() {
-        game._board.cur.rotate('right'); 
-      }
-
-      // Handlers: These are used to be able to bind/unbind controls
-      var handleKeyDown = function(evt) {
-        if( ! game._board.cur ) { return true; }
-        var caught = false;
-
-        caught = true;
-        if (game.options.asdwKeys) {
-          switch(evt.keyCode) {
-            case 65: /*a*/    moveLeft(true); break;
-            case 68: /*d*/    moveRight(true); break;
-            case 83: /*s*/    drop(true); break;
-            case 87: /*w*/    game._board.cur.rotate('right'); break;
-          }
-        }
-        switch(evt.keyCode) {
-          case 37: /*left*/   moveLeft(true); break;
-          case 39: /*right*/  moveRight(true); break;
-          case 40: /*down*/   drop(true); break;
-          case 38: /*up*/     game._board.cur.rotate('right'); break;
-          case 88: /*x*/      game._board.cur.rotate('right'); break;
-          case 90: /*z*/      game._board.cur.rotate('left'); break;
-          default: caught = false;
-        }
-        if (caught) evt.preventDefault();
-        return !caught;
-      };
-
-
-      var handleKeyUp = function(evt) {
-        if( ! game._board.cur ) { return true; }
-        var caught = false;
-
-        caught = true;
-        if (game.options.asdwKeys) {
-          switch(evt.keyCode) {
-            case 65: /*a*/    moveLeft(false); break;
-            case 68: /*d*/    moveRight(false); break;
-            case 83: /*s*/    drop(false); break;
-          }
-        }
-        switch(evt.keyCode) {
-          case 37: /*left*/   moveLeft(false); break;
-          case 39: /*right*/  moveRight(false); break;
-          case 40: /*down*/   drop(false); break;
-          default: caught = false;
-        }
-        if (caught) evt.preventDefault();
-        return !caught;
-      };
-
-      function isStopKey(evt) {
-        var cfg = {
-          stopKeys: {37:1, 38:1, 39:1, 40:1}
-        };
-
-        var isStop = (cfg.stopKeys[evt.keyCode] || (cfg.moreStopKeys && cfg.moreStopKeys[evt.keyCode]));
-        if (isStop) evt.preventDefault();
-        return isStop;
-      }
-
-      function getKey(evt) { return 'safekeypress.' + evt.keyCode; }
-
-      function keydown(evt) {
-        var key = getKey(evt);
-        $.data(this, key, ($.data(this, key) || 0) - 1);
-        return handleKeyDown.call(this, evt);
-      }
-
-      function keyup(evt) {
-        $.data(this, getKey(evt), 0);
-        handleKeyUp.call(this, evt);
-        return isStopKey(evt);
-      }
-
-      // Unbind everything by default
-      // Use event namespacing so we don't ruin other keypress events
-      $(document) .unbind('keydown.blockrain')
-                  .unbind('keyup.blockrain');
-
-      if( ! game.options.autoplay ) {
-        if( enable ) {
-          $(document) .bind('keydown.blockrain', keydown)
-                      .bind('keyup.blockrain', keyup);
-        }
-      }
-    },
-
-
-    _setupTouchControls: function(enable) {
-
-      var game = this;
-
-      // Movements can be held for faster movement
-      var moveLeft = function(event){
-        event.preventDefault();
-        game._board.cur.moveLeft();
-        game._board.holding.left = Date.now();
-        game._board.holding.right = null;
-        game._board.holding.drop = null;
-      };
-      var moveRight = function(event){
-        event.preventDefault();
-        game._board.cur.moveRight();
-        game._board.holding.right = Date.now();
-        game._board.holding.left = null;
-        game._board.holding.drop = null;
-      };
-      var drop = function(event){
-        event.preventDefault();
-        game._board.cur.drop();
-        game._board.holding.drop = Date.now();
-      };
-      var endMoveLeft = function(event){
-        event.preventDefault();
-        game._board.holding.left = null;
-      };
-      var endMoveRight = function(event){
-        event.preventDefault();
-        game._board.holding.right = null;
-      };
-      var endDrop = function(event){
-        event.preventDefault();
-        game._board.holding.drop = null;
-      };
-
-      // Rotations can't be held
-      var rotateLeft = function(event){
-        event.preventDefault();
-        game._board.cur.rotate('left');
-      };
-      var rotateRight = function(event){
-        event.preventDefault();
-        game._board.cur.rotate('right');
-      };
-
-      // Unbind everything by default
-      game._$touchLeft.unbind('touchstart touchend click');
-      game._$touchRight.unbind('touchstart touchend click');
-      game._$touchRotateLeft.unbind('touchstart touchend click');
-      game._$touchRotateRight.unbind('touchstart touchend click');
-      game._$touchDrop.unbind('touchstart touchend click');
-
-      if( ! game.options.autoplay && enable ) {
-        game._$touchLeft.show().bind('touchstart click', moveLeft).bind('touchend', endMoveLeft);
-        game._$touchRight.show().bind('touchstart click', moveRight).bind('touchend', endMoveRight);
-        game._$touchDrop.show().bind('touchstart click', drop).bind('touchend', endDrop);
-        game._$touchRotateLeft.show().bind('touchstart click', rotateLeft);
-        game._$touchRotateRight.show().bind('touchstart click', rotateRight);
-      } else {
-        game._$touchLeft.hide();
-        game._$touchRight.hide();
-        game._$touchRotateLeft.hide();
-        game._$touchRotateRight.hide();
-        game._$touchDrop.hide();
-      }
-
-    }
-
-  });
-
-})(jQuery));
+})(jQuery);
 /**
  * Themes. You can add more custom themes to this object.
  */
