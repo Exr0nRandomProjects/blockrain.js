@@ -39,7 +39,8 @@
 
       // other callbacks
       onKey: function(evt) {},  // NOTE: not implemented for touch or gyro controls
-      onBlockAppear: function() {}
+      onBlockAppear: function() {},
+      onTick: function() {}
     },
 
 
@@ -1028,6 +1029,7 @@
           //game.updateSizes();
 
           if( !this.paused && !this.gameover ) {
+            game.options.onTick();
 
             this.dropCount++;
 
